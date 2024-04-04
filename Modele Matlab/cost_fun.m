@@ -1,13 +1,12 @@
-%% Funkcja kosztu
 function error = cost_fun(parameters, stoptime, pend_ang_obiekt)
 
     InvPendulum_new_2022b
     simopt = simset('SrcWorkspace','base');
     model_name = 'InvPendulum_new_2022b';
-    set_param(model_name, 'StopTime', stoptime);
-    get_param(model_name + '/Model/p1', 'Gain')
-    set_param(model_name + '/Model/p1', 'Gain', num2str(parameters));
-    out1 = sim(model_name + '.slx', [], simopt);
+    set_param(model_name, "StopTime", stoptime);
+    get_param(model_name + "/Model/p1", "Gain")
+    set_param(model_name + "/Model/p1", 'Gain', num2str(parameters));
+    out1 = sim(model_name + ".slx", [], simopt);
 
     % Wyniki symulacji modelu
     theta = out1.out.signals(1).values(1:end, 3);
@@ -19,6 +18,6 @@ function error = cost_fun(parameters, stoptime, pend_ang_obiekt)
     end
 
     
-    % Obliczenie bÅ‚Ä™du (np. Å›redni bÅ‚Ä…d kwadratowy)
+    % Obliczenie b³êdu (np. œredni b³¹d kwadratowy)
     error = sum((theta - pend_ang_obiekt).^2)
 end

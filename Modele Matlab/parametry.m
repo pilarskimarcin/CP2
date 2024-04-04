@@ -10,10 +10,11 @@ c = 112.75;
 d = -2.74;
 
 %% Initial conditions
-x0 = 0.010; % [mm]
-q0 = 0.0; % [C]
+z0 = 0.010; % [m]
+z_max = 0.010; % [m]
+v0 = 0.0; % [m/s]
 
-sim_time = 1; % [s]
+sim_time = 1.5; % [s]
 %% Old
 % k1 = p1 / (m * l);
 % k2 = (fc - p2) / (m * l);
