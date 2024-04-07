@@ -1,105 +1,19 @@
-
-	Academic License
-
->> parametry
->> parametry
-Model mls_driver_nasz_2015a unloaded
-Model mls_driver_nasz_2015a unloaded
-Model mls_driver_nasz_2015a unloaded
->> plot(MLExpData.time, MLExpData.signals(1).values)
->> plot(MLExpData.time, MLExpData.signals(4).values)
->> plot(MLExpData.time, MLExpData.signals(2).values)
->> plot(MLExpData.time, MLExpData.signals(4).values)
->> 
->> plot(MLExpData.time, MLExpData.signals(1).values)
->> plot(MLExpData.time(1:1500), MLExpData.signals(1).values(1:1500))
->> parameters_tune
-Error using parameters_tune (line 16)
-Invalid setting in 'model_sterowania2015a/Subsystem/Integrator, Second-Order' for parameter 'ICX'.
-
-Caused by:
-    Error using parameters_tune (line 16)
-    Error evaluating parameter 'ICX' in 'model_sterowania2015a/Subsystem/Integrator, Second-Order'
-        Error using parameters_tune (line 16)
-        Undefined function or variable 'z0'.
- 
->> parameters_tune
-Attempt to reference field of non-structure array.
-
-Error in parameters_tune (line 19)
-plot(out.time, out.signals(1).values) % Position
- 
->> parameters_tune
-Attempt to reference field of non-structure array.
-
-Error in parameters_tune (line 19)
-plot(out1.time, out1.signals(1).values) % Position
- 
->> parameters_tune
->> parameters_tune
->> parameters_tune
->> parameters_tune
->> parameters_tune
->> help subplot
-subplot - Create axes in tiled positions
-
-    This MATLAB function divides the current figure into an m-by-n grid and creates
-    an axes for a subplot in the position specified by p.
-
-    subplot(m,n,p)
-    subplot(m,n,p,'replace')
-    subplot(m,n,p,'align')
-    subplot('Position',positionVector)
-    subplot(m,n,p,ax)
-    subplot(___,Name,Value)
-    h = subplot(___)
-    subplot(h)
-
-    Reference page for subplot
-
-    See also axes, cla, clf, figure, gca, Axes Properties
-
->> parameters_tune
->> parameters_tune
->> linearize
-Attempt to execute SCRIPT linearize as a function:
-E:\MATLAB_WORK\LaboratoriumProblemowe\JMDSMP  Capstone 2.0\Modele Matlab\linearize.m
-
-Error in linearize (line 24)
-sys = linearize(model,io,op);
- 
+// linearyzuje model
 >> linearizemodel
+
+// porownanie obiektu i modelu
 >> parameters_tune
+
+// wynik linearyzacji
 >> linsys1
 
 linsys1 =
- 
+// macierze a,b,c,d
   a = 
                  Integrator  Integrator1  Integrator2
    Integrator        -39.45         8.04   -4.123e-10
    Integrator1       -15.39            0         1718
    Integrator2            0            1            0
- 
-  b = 
-                    u
-   Integrator   110.6
-   Integrator1      0
-   Integrator2      0
- 
-  c = 
-        Integrator  Integrator1  Integrator2
-   z             0            0            1
-   z'            0            1            0
-   q'            1            0            0
- 
-  d = 
-       u
-   z   0
-   z'  0
-   q'  0
- 
-Name: Linearization around the operating point "op_trim1"
-Continuous-time state-space model.
 
 >> linsys1.a
 
@@ -111,6 +25,7 @@ ans =
    -0.0154         0    1.7178
          0    0.0010         0
 
+// pokazuje macierze ABCD systemu i zapisuje do zmiennych od razu
 >> [A,B,C,D] = ssdata(linsys1)
 
 A =
@@ -120,28 +35,13 @@ A =
    -0.0395    0.0080   -0.0000
    -0.0154         0    1.7178
          0    0.0010         0
+...
 
-
-B =
-
-  110.6179
-         0
-         0
-
-
-C =
-
-     0     0     1
-     0     1     0
-     1     0     0
-
-
-D =
-
-     0
-     0
-     0
-
+/* 
+    Przestawia kolejności w macierzach - na podstawie ułożenia macierzy C
+    macierz C jest zmieniona w jednostkową, reszta przetransformowana -
+    dzięki temu są wg tego jak są po kolei zmienne stanu
+*/
 >> linsys2 = ss2ss(linsys1,linsys1.C)
 
 linsys2 =
@@ -169,10 +69,8 @@ linsys2 =
    z   0
    z'  0
    q'  0
- 
-Name: Linearization around the operating point "op_trim1"
-Continuous-time state-space model.
 
+// wartości własne - niestabilne, bo jest dodatnia
 >> eig(linsys2)
 
 ans =
@@ -181,6 +79,7 @@ ans =
  -40.0685 + 7.7802i
  -40.0685 - 7.7802i
 
+// macierz sterowalności
 >> ctrb(linsys2)
 
 ans =
@@ -191,12 +90,15 @@ ans =
          0   -0.0170    0.6716
     0.0011   -0.0436    1.5851
 
+// rząd macierzy
 >> rank(ans)
 
 ans =
 
      3
 
+// macierz sterowalności systemu bez przestawienia - jest obrócona, nie ma 
+// znaczenia
 >> [B,A*B,A^2*B]
 
 ans =
@@ -207,70 +109,17 @@ ans =
          0   -0.0170    0.6716
          0         0   -0.0170
 
->> K = lqr(A,B,Q,R)
-Undefined function or variable 'Q'.
- 
->> Q = eye(3)
-
-Q =
-
-     1     0     0
-     0     1     0
-     0     0     1
-
->> R = 1
-
-R =
-
-     1
-
->> K = lqr(A,B,Q,R)
-
-K =
-
-    1.4536   -7.7278 -320.6262
-
+// żeby mieć dobrą kolejność, bierzemy macierze z przestawionego systemu
 >> [A,B,C,D] = ssdata(linsys2)
 
-A =
-
-   1.0e+03 *
-
-         0    0.0010         0
-    1.7178         0   -0.0154
-   -0.0000    0.0080   -0.0395
-
-
-B =
-
-         0
-         0
-  110.6179
-
-
-C =
-
-     1     0     0
-     0     1     0
-     0     0     1
-
-
-D =
-
-     0
-     0
-     0
-
+// Q jednostkowa (eye), R = 1
 >> K = lqr(A,B,Q,R)
 
 K =
 
  -320.6262   -7.7278    1.4536
 
->> optrim1
-Undefined function or variable 'optrim1'.
- 
-Did you mean:
+// Punkt pracy - wyliczony w linearizemodel
 >> op_trim1
 
  Operating Report for the Model plant_model_for_linearization.
@@ -299,50 +148,27 @@ Outputs:
       y:             0    [-Inf Inf]
 (3.) plant_model_for_linearization/q'
       y:          1.28    [-Inf Inf]
-
->> op_trim1.States
-(1.) plant_model_for_linearization/Integrator
-      x:          1.28      dx:     -6.54e-11 (0)
-(2.) plant_model_for_linearization/Integrator1
-      x:             0      dx:     -7.32e-08 (0)
-(3.) plant_model_for_linearization/Integrator2
-      x:          0.01      dx:             0 (0)
->> op_trim1.States.x
-No appropriate method, property, or field 'x' for class 'opcond.StateReport'.
  
 >> op_trim1.States(1)
 (1.) plant_model_for_linearization/Integrator
       x:          1.28      dx:     -6.54e-11 (0)
->> op_trim1.States(1).x
 
-ans =
-
-    1.2750
-
+// natężenie w punkcie pracy
 >> i_ep = op_trim1.States(1).x
 
 i_ep =
 
     1.2750
 
+// wejście w punkcie pracy
 >> u_ep = op_trim1.Inputs(1).u
 
 u_ep =
 
     0.4548
 
->> i_ep
-
-i_ep =
-
-    1.2750
-
->> K
-
-K =
-
- -320.6262   -7.7278    1.4536
-
+// Q zmienione - żeby większy wpływ mieć na zmienne stanu odpowiednie
+// prąd i pozycja - CZEMU TAK? POZYCJA NAJWAZNIEJSZA?
 >> Q = diag([100,10,1])
 
 Q =
@@ -357,6 +183,7 @@ K =
 
  -326.9129   -8.4220    1.5062
 
+// R większe - bardziej zwiększa koszt używania wejścia w funkcji celu
 >> R = 10
 
 R =
@@ -369,12 +196,7 @@ K =
 
  -190.8497   -4.6393    0.8754
 
->> z_max
-
-z_max =
-
-    0.0100
-
+// Żeby kulka miała gdzie spaść choć trochę
 >> z_max = 0.020
 
 z_max =
@@ -398,9 +220,3 @@ K =
 z0 =
 
     0.0050
-
->> diary
->> diary cmd.txt
->> diary
->> diary cmd.txt
->> 

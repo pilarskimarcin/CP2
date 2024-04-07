@@ -10,15 +10,12 @@ c = 112.75;
 d = -2.74;
 
 %% Initial conditions
-z0 = 0.010; % [m]
+z0 = 0.005; % [m]
 z_max = 0.010; % [m]
 v0 = 0.0; % [m/s]
 
 sim_time = 1.5; % [s]
 %% Old
-% k1 = p1 / (m * l);
-% k2 = (fc - p2) / (m * l);
-% k3 = fp / (m * l);
 % %% Regulator
 % syms x1 x2 x3 x4 u
 % % NASTAWY GORA
