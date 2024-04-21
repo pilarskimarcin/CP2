@@ -28,13 +28,18 @@ op.Inputs(1).u = 0.4547778821501982;
 
 %% Linearize the model
 sys = linearize(model,op);
+A = sys.a;
+A(4,1) = 1;
+A = [A, zeros(4,1)];
+B = sys.b;
+B(4,1) = 0; 
 
 %% Plot the resulting linearization
 step(sys)
 
 %%
-Q = diag([1,1,1]);
-R = 1;
+Q = diag([1000,100,10,1000]);
+R = 10;
 
 Ts = 0.001;
 Kd = lqrd(A,B,Q,R,Ts)
