@@ -25,7 +25,6 @@ op.States(3).x = 1.275039359089427;
 % Input (1) - plant_model_for_linearization/u
 op.Inputs(1).u = 0.4547778821501982;
 
-
 %% Linearize the model
 sys = linearize(model,op);
 A = sys.a;
@@ -37,14 +36,26 @@ B(4,1) = 0;
 %% Plot the resulting linearization
 step(sys)
 
+%% Observator Luenbergera
+A_obs = A(1:3,1:3);
+B_obs = B(1:3);
+C_obs = [1 0 0; 0 0 1];
+
+rank(obsv(A_obs,C_obs))
+
+eig_val = [-1, -1.1, -1.2];
+L = transpose(place(transpose(A_obs),C_obs.',eig_val));
+A_LC = A_obs - L*C_obs;
+eig(A_LC)
+
 %%
-Q = diag([1000,100,10,1000]);
-R = 10;
+Q = diag([1000,100,10,500]);
+R = 1;
 
 Ts = 0.001;
 Kd = lqrd(A,B,Q,R,Ts)
 Kc = lqr(A,B,Q,R)
 
-z_ep = 0.01;
+z_ep = op.States(1).x;
 i_ep = op.States(3).x;
 u_ep = op.Inputs(1).u;

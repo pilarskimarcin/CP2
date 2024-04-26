@@ -11,6 +11,7 @@
 % 
 % % Uruchom optymalizacjê
 % optimalParameters = fminsearch(cost_fun_wrapper, initialParameters);
+
 end_time = 85000;
 figure
 for i = 1:4
