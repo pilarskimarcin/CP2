@@ -12,7 +12,7 @@
 % % Uruchom optymalizacjê
 % optimalParameters = fminsearch(cost_fun_wrapper, initialParameters);
 
-end_time = 85000;
+end_time = 60000;
 figure
 for i = 1:4
     subplot(4, 1, i)

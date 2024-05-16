@@ -28,14 +28,13 @@ op.Inputs(1).u = 0.4547778821501982;
 %% Linearize the model
 sys = linearize(model,op);
 A = sys.a;
-B = sys.b;
-% For the I part added to the LQR controller
 A(4,1) = 1;
 A = [A, zeros(4,1)];
-B(4,1) = 0;
+B = sys.b;
+B(4,1) = 0; 
 
 %% Plot the resulting linearization
-step(sys)
+% step(sys)
 
 %% Luenberger Observer
 A_obs = A(1:3,1:3);
@@ -44,14 +43,26 @@ C_obs = [1 0 0; 0 0 1];
 
 rank(obsv(A_obs,C_obs))
 
-eig_val = [-1, -1.1, -1.2];
+eig_val = 20*[-1, -1.1, -1.2];
 L = transpose(place(transpose(A_obs),C_obs.',eig_val));
 A_LC = A_obs - L*C_obs;
 eig(A_LC)
 
-%% For the LQR controller
-Q = diag([1000,100,10]); % LQR
-Q = diag([1000,100,10,500]); % LQI
+%% Observator Luenbergera z rozszerzona przestrzenia stanu
+C_obs_aug = [C_obs, [0,0;0,1]];
+A_obs_aug = [A_obs, B_obs, zeros(3,1); zeros(2, 5)]
+B_obs_aug = [B_obs;zeros(2,1)]
+
+rank(obsv(A_obs_aug,C_obs_aug))
+
+eig_val = 10*[-1, -1.1, -1.2, -1.3, -1.4];
+L_aug = transpose(place(transpose(A_obs_aug),C_obs_aug.',eig_val));
+A_LC_aug = A_obs_aug - L_aug*C_obs_aug
+eig(A_LC_aug)
+
+%%
+% Q = diag([1000,100,10]);
+Q = diag([1000,100,10,500]);
 R = 1;
 
 Ts = 0.001;
