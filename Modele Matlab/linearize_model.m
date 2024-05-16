@@ -28,15 +28,16 @@ op.Inputs(1).u = 0.4547778821501982;
 %% Linearize the model
 sys = linearize(model,op);
 A = sys.a;
+B = sys.b;
+% For the I part added to the LQR controller
 A(4,1) = 1;
 A = [A, zeros(4,1)];
-B = sys.b;
-B(4,1) = 0; 
+B(4,1) = 0;
 
 %% Plot the resulting linearization
 step(sys)
 
-%% Observator Luenbergera
+%% Luenberger Observer
 A_obs = A(1:3,1:3);
 B_obs = B(1:3);
 C_obs = [1 0 0; 0 0 1];
@@ -48,8 +49,9 @@ L = transpose(place(transpose(A_obs),C_obs.',eig_val));
 A_LC = A_obs - L*C_obs;
 eig(A_LC)
 
-%%
-Q = diag([1000,100,10,500]);
+%% For the LQR controller
+Q = diag([1000,100,10]); % LQR
+Q = diag([1000,100,10,500]); % LQI
 R = 1;
 
 Ts = 0.001;

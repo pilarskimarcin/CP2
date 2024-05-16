@@ -2,7 +2,7 @@
 m = 0.058; % [kg]
 u_max = 12.28; % [V]
 g = 9.81; % [m/s^2]
-R = 4.38; % [Ohm]
+R_e = 4.38; % [Ohm]
 % L(z) parameters: (L(z) - [mH], scaled in the model)
 a = 27.62;
 b = -304.84;
